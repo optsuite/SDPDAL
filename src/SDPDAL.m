@@ -7,16 +7,25 @@ function [R,y,S,Z,ret]=SDPDAL(n, A, b, AI, bI, manifold, f, h, p, opts)
 %
 % Input:
 %           n --- dimension 
-%           A --- linear equality constraints 
+%           A --- linear equality constraints with fileds
+%                  A.applyA(R)      A(R^TR)
+%                  A.applyAT(y)     A^T(y)
+%                  A.applyAUR(U,R)  A(R^TU + U^TR) 
 %           b --- right hand side of linear equality constraints  
 %          AI --- linear inequality constraints  
 %          bI --- right hand side of linear inequality constraints
 %    manifold --- manifold structures 
-%          f  --- objective function and its gradient
-%          h  --- nonsmooth term
+%          f  --- function value, gradient and Hessian  of f(R^TR) with respect to R                
+%          h  --- function value, proximal operator and its Jacobian of nonsmooth term
 %          p  --- estimation of rank
 %
-%        opts --- option structure 
+%        opts --- options structure with fields
+%                  max_iter    max number of outer iterations
+%                  maxitersub  max number of inner iterations
+%                  sigma0      initial guess of penalty paramter for equality and inequality constraints 
+%                  nu0         initial guess of penalty paramter for nonsmooth term h
+%                  tol         accuracy tolerance for solving the SDP problem.
+%                  sub_solver  subproblem solver  0: adaptive selection 1: ARNT 2: manopt trustregion 3: RGBB
 % Output:
 %           R --- primal variable 
 %           y --- dual variable
@@ -52,7 +61,6 @@ if ~isfield(opts, 'flag_increase_p'); opts.flag_increase_p = false; end
 if ~isfield(opts, 'flag_decrease_p'); opts.flag_decrease_p = false; end
 if ~isfield(opts, 'comp_eigS'); opts.comp_eigS = 1; end
 if ~isfield(opts, 'pd_ratio'); opts.pd_ratio = 5; end
-if ~isfield(opts, 'use_sdpnal'); opts.use_sdpnal = 0; end
 if ~isfield(opts, 'subtol_scheme'); opts.subtol_scheme = 0; end
 % 0: gtol_ratio * sqrt(errA); 1: gtol_ratio * errA // adaptive gtol_ratio
 if ~isfield(opts, 'gtol_ratio0'); opts.gtol_ratio0 = 1e3; end
@@ -338,11 +346,7 @@ deltak = normb * (norm(ARb) + norm(AIRb_plus))/(1+normb * (norm(b) + norm(bI)));
 
 [~, ~, deltaZ] = h.obj_prox(R, 0, nuk, [], h.data{:});
 
-% 	if opts.use_sdpnal
-% 		At = opts.sdpnal_input.At;
-% 		blk = opts.sdpnal_input.blk;
-% 	end
-% y_p = y;
+
 out.nrmG = 1;
 sub_iter = 0;
 avginit = 0;
@@ -761,6 +765,9 @@ while iter<opts.max_iter && ~cstop
 %     elseif sigmak < sigmak_p || nuk < nuk_p
 %         gtol_ratio = gtol_ratio / sqrt(rho);
 %     end
+Use Control + Shift + m to toggle the tab key moving focus. Alternatively, use esc then tab to move to the next interactive element on the page.
+Editing SDPDAL/src/SDPDAL.m at main · optsuite/SDPDAL
+
     
     
     %S = S1-BTu-Z;
@@ -919,17 +926,17 @@ sub_iter = sub_iter/iter;
 [u, BTu] = compute_u(manifold, gradR, R, normR);
 u = u(:);
 len_u = length(u);
-y_sdpnal = zeros(dm+dmI+len_u, 1);
-y_sdpnal(1:len_u) = u*normA;
+y_original = zeros(dm+dmI+len_u, 1);
+y_original(1:len_u) = u*normA;
 if dm > 0
-    y_sdpnal((len_u+1):(len_u+dm)) = y;
+    y_original((len_u+1):(len_u+dm)) = y;
 end
 if dmI > 0
-    y_sdpnal((len_u+dm+1):(len_u+dm+dmI)) = yI;
+    y_original((len_u+dm+1):(len_u+dm+dmI)) = yI;
 end
 
 % re-scale solution varible
-y = y_sdpnal*normC/normA;
+y = y_original*normC/normA;
 R = sqrt(normb/normA)*R;
 S = normC*S;
 Z = normC*Z;
