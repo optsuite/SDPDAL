@@ -6,7 +6,6 @@
  # Problems and solvers
  - The package contains codes for optimization problems on manifold:   
     ​        $$\min  f(X) + h(X)  s.t. X \in D, A(X) = b,$$ 
-    
     where $D = \{X: B(X)=b_0, X\succeq 0\}$, which has the manifold structure by factorizing $X = R^TR$. 
  - This code is currently in the experimental phase and subject to further development and refinement. 
  - The manifold structure of SDPDAL is taken from the ARNT and manopt package.  We thank the authors for kindly sharing their codes. 
@@ -23,6 +22,11 @@ Applications have been solved by these solvers:
 We list the downloading links to the datasets used in the papers for reproduction:
 * Gset, NCM, RCP and Theta: http://faculty.bicmr.pku.edu.cn/~wenzw/code/sdp_data.zip
 
+# Installation 
+
+ `>> cd example` 
+ `>> test_ncm`
+ 
 # References
 - [Yifei Wang, Kangkang Deng, Haoyang Liu, Zaiwen Wen, A Decomposition Augmented Lagrangian Method for Low-rank Semidefinite Programming, SIAM Journal on Optimization, Vol. 33, No. 3, 1361-1390, 2023](https://arxiv.org/pdf/2109.11707.pdf)
 
@@ -31,19 +35,11 @@ We list the downloading links to the datasets used in the papers for reproductio
 - [Nicolas Boumal , Bamdev Mishra, P.-A. Absil and Rodolphe Sepulchre. Manopt, a Matlab Toolbox for Optimization on Manifolds. Journal of Machine Learning Research (2014) 1455-1459](http://jmlr.org/papers/v15/boumal14a.html)
 
 
-
-
  # The Authors
  We hope that the package is useful for your application.  If you have any bug reports or comments, please feel free to email one of the toolbox authors:
  * Haoyang Liu, liuhaoyang at pku.edu.cn
  * Kangkang Deng, dengkangkang at pku.edu.cn
  * Zaiwen Wen, wenzw at pku.edu.cn
-
- # Installation 
-
- `>> cd example` 
-
- `>> test_ncm`
 
 
  # Copyright
