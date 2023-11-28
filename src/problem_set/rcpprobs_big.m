@@ -1,0 +1,9 @@
+function [names, nlist] = rcpprobs_big()
+    names = { ...
+        'spambase', ...
+    };
+
+    nlist = {
+        {{1500, '-large'}}, ...
+    };
+end

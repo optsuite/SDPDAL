@@ -1,0 +1,9 @@
+function [names, nlist] = rcpprobs_segment()
+    names = { ...
+        'segment', ...
+    };
+
+    nlist = {
+        {{400, '-small'}, {700, '-medium'}, {1000, '-large'}}, ...
+    };
+end

@@ -1,0 +1,9 @@
+function [names, nlist] = rcpprobs_debug()
+    names = { ...
+        'abalone', ...
+    };
+
+    nlist = {
+        {{200, '-small'}}, ...
+    };
+end
